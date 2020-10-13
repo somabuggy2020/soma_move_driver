@@ -2,6 +2,17 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QString>
+#include <QDebug>
+#include <QThread>
+#include <QTimer>
+
+#include "Xbox/xbox.h"
+#include "Data/data.h"
+#include "Hardware/hardware.h"
+#include "Behavior/behavior.h"
+
+#include "Hardware/hardwareinfoviewer.h"
 
 namespace Ui {
 class MainWindow;
@@ -16,7 +27,29 @@ public:
     ~MainWindow();
 
 private:
+    void start();
+
+		void closeEvent(QCloseEvent *event);
+
+private slots:
+    void main();
+
+signals:
+		void updateTimestamp(QDateTime timestamp, double T, double dt);
+		void update(Data *data);
+
+private:
     Ui::MainWindow *ui;
+    QThread *thread;
+    QTimer *timer;
+		bool isThread;
+
+    Xbox *xbox;
+		Data *data;
+		Hardware *hardware;
+		Behavior *behavior;
+
+		HardwareInfoViewer *hardwareInfoVwr;
 };
 
 #endif // MAINWINDOW_H
