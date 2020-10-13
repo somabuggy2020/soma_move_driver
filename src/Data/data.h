@@ -29,9 +29,9 @@ const int RL = 2;
 //----------------------------------------------------------------------------------------------------
 struct Command_t
 {
-    int mode; //namespace Mode variable
-    double steer;  //steering angle[deg]
-    double v;      //velocity[m/s]
+    int mode;       //namespace Mode variable
+    double steer;   //steering angle[deg]
+    double v;       //velocity[m/s]
 
     Command_t(): mode(Mode::Stop), steer(0.0), v(0.0) {}
 };
@@ -48,14 +48,14 @@ public:
     ~Data();
 
     //Time managment
-    void startTimeMeasurement();
-    void updatePeriod();
-    QString getTimeStampStr();
+    //    void startTimeMeasurement();
+    //    void updatePeriod();
+    //    QString getTimeStampStr();
 
     //Logging managment
-    void SetupLogging(QString prefix = "", QString suffix = "");
-    void Logging();
-    void QuitLogging();
+    //    void SetupLogging(QString prefix = "", QString suffix = "");
+    //    void Logging();
+    //    void QuitLogging();
 
     //State Vector update
     void updateState();
@@ -66,16 +66,11 @@ public:
 public slots:
 
 private:
-    QDateTime log_startTime;
-    QDateTime log_currentTime;
+    //    QDateTime log_startTime;
+    //    QDateTime log_currentTime;
 
 public:
-
-private:
-    QSettings *cfg;
-    QDateTime st, ct; //time stamp
-
-public:
+    QDateTime st, ct; //start timestamp, current timestamp
     double T;   //[sec]
     double dt;  //[sec]
 

@@ -28,6 +28,9 @@ private:
 private slots:
     void main();
 
+signals:
+    void updateTimestamp(QDateTime timestamp, double T, double dt);
+
 private:
     Ui::MainWindow *ui;
     QThread *thread;

@@ -33,6 +33,7 @@ HEADERS += \
         src/mainwindow.h \
         src/Data/data.h \
         src/Common/configfilepath.h \
+        src/Common/definitions.h \
         src/Xbox/xbox.h \
         src/Xbox/Gamepad/gamepad.h
 

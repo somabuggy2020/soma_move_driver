@@ -10,6 +10,14 @@ MainWindow::MainWindow(QWidget *parent) :
     qInfo() << "GUI thread:" << QThread::currentThreadId();
     ui->setupUi(this);
 
+    connect(this, &MainWindow::updateTimestamp, this,
+            [=](QDateTime timestamp, double T, double dt){
+        QString str;
+        str += timestamp.toString("hh:mm:ss");
+        str += QString(" [T=%1 / dt=%2]").arg(QS_NUM2(T)).arg(dt);
+        ui->statusBar->showMessage(str);
+    });
+
 
     xbox = new Xbox();
     data = new Data();
@@ -24,11 +32,18 @@ MainWindow::~MainWindow()
 
 void MainWindow::main()
 {
-    qDebug() << "Main process";
-    qDebug() << "Thread ID:" << this->thread->currentThreadId();
+    QMetaObject::invokeMethod(timer, "stop");
+
+    //update timestamp
+    QDateTime tmp = QDateTime::currentDateTime();
+    data->T = (double)data->st.msecsTo(tmp)/1000.0;
+    data->dt = (double)data->ct.msecsTo(tmp)/1000.0;
+    data->ct = tmp;
+    emit updateTimestamp(data->ct, data->T, data->dt);
 
     xbox->recv(data);
 
+    QMetaObject::invokeMethod(timer, "start");
     return;
 }
 
