@@ -9,6 +9,7 @@
 
 #include "Xbox/xbox.h"
 #include "Data/data.h"
+#include "Hardware/hardware.h"
 
 namespace Ui {
 class MainWindow;
@@ -29,16 +30,20 @@ private slots:
     void main();
 
 signals:
-    void updateTimestamp(QDateTime timestamp, double T, double dt);
-    void update(Data *data);
+		void updateTimestamp(QDateTime timestamp, double T, double dt);
+		void update(Data *data);
 
 private:
     Ui::MainWindow *ui;
     QThread *thread;
     QTimer *timer;
+		bool isThread;
 
     Xbox *xbox;
-    Data *data;
+		Data *data;
+		Hardware *hardware;
+
+		void closeEvent(QCloseEvent *event);
 };
 
 #endif // MAINWINDOW_H

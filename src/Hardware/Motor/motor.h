@@ -14,38 +14,39 @@
 
 class Motor : public QObject
 {
-    Q_OBJECT
+		Q_OBJECT
 public:
-    explicit Motor(QObject *parent = nullptr);
-    explicit Motor(QString name, QString role, QObject *parent = nullptr);
-    ~Motor();
+		explicit Motor(QObject *parent = nullptr);
+		explicit Motor(QString name, QString role, QObject *parent = nullptr);
+		~Motor();
 
-    int initialize();
+		int init();
+		void finalize();
 
-    int open();
-    void close();
+		int open();
+		void close();
 
-    int moveto(double pos, bool minmax = true, bool immediatery = true);
-    int setMaxRPM(unsigned int MaxRPM);
-    int recv(MotorInfo::Data_t &d);
-
-private:
-    int FindMainHandle();
-    int FindSubHandle();
-    QString strVCSError(unsigned int error_code);
+		int moveto(double pos, bool minmax = true, bool immediatery = true);
+		int setMaxRPM(unsigned int MaxRPM);
+		int recv(MotorInfo::Data_t &d);
 
 private:
-    bool isUse;
+		int FindMainHandle();
+		int FindSubHandle();
+		QString strVCSError(unsigned int error_code);
 
-    QString name;
-    QString role;
-    MotorInfo::Config_t mcfg; //Motor configs
+private:
+		bool isUse;
 
-    static void *MainHandle;
-    static void *SubHandle;
-    void *handle;
+		QString name;
+		QString role;
+		MotorInfo::Config_t mcfg; //Motor configs
 
-    double dTrgPos;
+		static void *MainHandle;
+		static void *SubHandle;
+		void *handle;
+
+		double dTrgPos;
 };
 
 #endif // MOTOR_H

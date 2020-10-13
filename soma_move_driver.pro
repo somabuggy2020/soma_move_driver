@@ -45,7 +45,8 @@ HEADERS += \
         src/Xbox/Gamepad/gamepad.h \
         src/Hardware/Motor/motor.h \
         src/Hardware/Motor/motorinfo.h \
-    src/Hardware/hardware.h
+    src/Hardware/hardware.h \
+    src/Hardware/hardwareinfo.h
 
 FORMS += \
         src/mainwindow.ui

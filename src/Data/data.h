@@ -15,13 +15,13 @@
 #include "../Common/configfilepath.h"
 //#include "../Common/statevector.h"
 #include "../Common/definitions.h"
-//#include "../Hardware/hardwareinfo.h"
+#include "../Hardware/hardwareinfo.h"
 
 namespace VeloControlMode
 {
-const int FIX = 0;
-const int PID = 1;
-const int RL = 2;
+	const int FIX = 0;
+	const int PID = 1;
+	const int RL = 2;
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -29,11 +29,11 @@ const int RL = 2;
 //----------------------------------------------------------------------------------------------------
 struct Command_t
 {
-    int mode;       //namespace Mode variable
-    double steer;   //steering angle[deg]
-    double v;       //velocity[m/s]
+	int mode;       //namespace Mode variable
+	double steer;   //steering angle[deg]
+	double v;       //velocity[m/s]
 
-    Command_t(): mode(Mode::Stop), steer(0.0), v(0.0) {}
+	Command_t(): mode(Mode::Stop), steer(0.0), v(0.0) {}
 };
 
 
@@ -42,58 +42,43 @@ struct Command_t
 //----------------------------------------------------------------------------------------------------
 class Data : public QObject
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    explicit Data(QObject *parent = nullptr);
-    ~Data();
+	explicit Data(QObject *parent = nullptr);
+	~Data();
 
-    //Time managment
-    //    void startTimeMeasurement();
-    //    void updatePeriod();
-    //    QString getTimeStampStr();
+	//State Vector update
+	//	void updateState();
 
-    //Logging managment
-    //    void SetupLogging(QString prefix = "", QString suffix = "");
-    //    void Logging();
-    //    void QuitLogging();
-
-    //State Vector update
-    void updateState();
-
-    //Config managment
-    void restoreConfig();
-
-private:
-    //    QDateTime log_startTime;
-    //    QDateTime log_currentTime;
+	//Config managment
+	void restoreConfig();
 
 public:
-    QDateTime st, ct; //start timestamp, current timestamp
-    double T;   //[sec]
-    double dt;  //[sec]
+	QDateTime st, ct; //start timestamp, current timestamp
+	double T;   //[sec]
+	double dt;  //[sec]
 
-    int state, last_state;	//State namespace value
-    int mode;               //Mode namespace value
-    Command_t cmd;          //Command structure
+	int state, last_state;	//State namespace value
+	int mode;               //Mode namespace value
+	Command_t cmd;          //Command structure
+	HardwareInfo::Data_t hardware;	//Hardware Data
 
-    //	HardwareData hardware;	//Hardware Data
-
-    //    StateVector X_t;	//State vector {x, y, theta}
-    double v[3];			//Velocity [m/s]
-    double ev[3];			//Error of velocity t and t-1 and t-2
+	//    StateVector X_t;	//State vector {x, y, theta}
+	double v[3];			//Velocity [m/s]
+	double ev[3];			//Error of velocity t and t-1 and t-2
 
 
-    bool isRemote;							//Remote false:Off, true:On
-    bool isCommClient;					//Command client false:logout, true:exists
+	bool isRemote;							//Remote false:Off, true:On
+	bool isCommClient;					//Command client false:logout, true:exists
 
-    int VeloController;	//0:constant, 1:PID, 2:RL
+	int VeloController;	//0:constant, 1:PID, 2:RL
 
-    double V_ref, P, D, V_err;
-    double Pout, Dout;
+	double V_ref, P, D, V_err;
+	double Pout, Dout;
 
-    bool isLog;
-    QFile *log;
-    QTextStream *out;
+	bool isLog;
+	QFile *log;
+	QTextStream *out;
 };
 
 

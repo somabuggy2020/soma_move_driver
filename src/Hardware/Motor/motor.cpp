@@ -16,8 +16,8 @@ void* Motor::SubHandle = nullptr;
  */
 Motor::Motor(QObject *parent) : QObject(parent)
 {
-    handle = nullptr;
-    dTrgPos = 0.0;
+		handle = nullptr;
+		dTrgPos = 0.0;
 }
 
 /*!
@@ -27,10 +27,10 @@ Motor::Motor(QObject *parent) : QObject(parent)
  * \param parent
  */
 Motor::Motor(QString name, QString role, QObject *parent)
-    : QObject(parent)
+		: QObject(parent)
 {
-    this->name = name;
-    this->role = role;
+		this->name = name;
+		this->role = role;
 }
 
 /*!
@@ -44,43 +44,47 @@ Motor::~Motor()
  * \brief Motor::initialize
  * \return
  */
-int Motor::initialize()
+int Motor::init()
 {
-    qInfo() << "Init." << name << "/" << role;
+		qInfo() << "Init." << name << "/" << role;
 
-    QSettings *cfg = new QSettings(QString(CONFIG_FILE_PATH),
-                                   QSettings::IniFormat,
-                                   this);
+		QSettings *cfg = new QSettings(QString(CONFIG_FILE_PATH),
+																	 QSettings::IniFormat);
 
-    if(cfg->status() != QSettings::NoError){
-        qCritical() << "Failure open config file";
-        qCritical() << "PATH:" << cfg->fileName();
-        return -1;
-    }
+		if(cfg->status() != QSettings::NoError){
+				qCritical() << "Failure open config file";
+				qCritical() << "PATH:" << cfg->fileName();
+				return -1;
+		}
 
-    cfg->beginGroup("USE");
-    isUse = cfg->value(role,"False").toBool();
-    cfg->endGroup();
+		cfg->beginGroup("USE");
+		isUse = cfg->value(role, "False").toBool();
+		cfg->endGroup();
 
-    cfg->beginGroup(name);
-    mcfg.DeviceName = cfg->value("DEVICE_NAME").toString();
-    mcfg.ProtocolStackName = cfg->value("PROTOCOL_STACK_NAME").toString();
-    mcfg.InterfaceName = cfg->value("INTERFACE_NAME").toString();
-    mcfg.PortName = cfg->value("PORT_NAME").toString();
+		cfg->beginGroup(name);
+		mcfg.DeviceName = cfg->value("DEVICE_NAME", "EPOS2").toString();
+		mcfg.ProtocolStackName = cfg->value("PROTOCOL_STACK_NAME", "MAXON SERIAL V2").toString();
+		mcfg.InterfaceName = cfg->value("INTERFACE_NAME", "USB").toString();
+		mcfg.PortName = cfg->value("PORT_NAME", "USB0").toString();
 
-    mcfg.Node = (unsigned short)cfg->value("NODE").toInt();
-    mcfg.MaxRPM	= cfg->value("MAXRPM").toUInt();
-    mcfg.Accel = cfg->value("ACCEL").toUInt();
-    mcfg.Decel = cfg->value("DECEL").toUInt();
-    mcfg.EncReso = cfg->value("ENCRESO").toInt();
-    mcfg.GearRatio = cfg->value("GEARRATIO").toDouble();
-    mcfg.MaxPos = cfg->value("MAXPOS").toDouble();
-    mcfg.MinPos = cfg->value("MINPOS").toDouble();
+		mcfg.Node = (unsigned short)cfg->value("NODE", 0).toInt();
+		mcfg.MaxRPM	= cfg->value("MAXRPM", 3500).toUInt();
+		mcfg.Accel = cfg->value("ACCEL", 10000).toUInt();
+		mcfg.Decel = cfg->value("DECEL", 10000).toUInt();
+		mcfg.EncReso = cfg->value("ENCRESO", 256).toInt();
+		mcfg.GearRatio = cfg->value("GEARRATIO", 150.0).toDouble();
+		mcfg.MaxPos = cfg->value("MAXPOS", 1.0).toDouble();
+		mcfg.MinPos = cfg->value("MINPOS", 1.0).toDouble();
 
-    qDebug() << mcfg;
-    cfg->endGroup();
+		qDebug() << "Config:" << mcfg;
+		cfg->endGroup();
 
-    return 0;
+		return 0;
+}
+
+void Motor::finalize()
+{
+	close();
 }
 
 /*!
@@ -89,78 +93,78 @@ int Motor::initialize()
  */
 int Motor::open()
 {
-    if(!isUse) return 0;
+		if(!isUse) return 0;
 
-    qInfo() << "Open" << name << "/" << role;
-    if(FindMainHandle() == -1) return -1;
+		qInfo() << "Open" << name << "/" << role;
+		if(FindMainHandle() == -1) return -1;
 
-    //	if(MainHandle == NULL){
-    //		if(FindMainHandle() == -1) return -1;
-    //		else handle = MainHandle;
-    //	}
-    //	else{
-    //		handle = MainHandle;
-    //	}
+		//	if(MainHandle == NULL){
+		//		if(FindMainHandle() == -1) return -1;
+		//		else handle = MainHandle;
+		//	}
+		//	else{
+		//		handle = MainHandle;
+		//	}
 
-    //	if(SubHandle == NULL){
-    //		if(FindSubHandle() == -1) return -1;
-    //	}
-    //	else handle = SubHandle;
+		//	if(SubHandle == NULL){
+		//		if(FindSubHandle() == -1) return -1;
+		//	}
+		//	else handle = SubHandle;
 
-    unsigned int error = 0;
-    int ret = true;
+		unsigned int error = 0;
+		int ret = true;
 
-    //(1) Clear Faults
-    ret = VCS_ClearFault(handle, mcfg.Node, &error);
-    if(ret == -1){
-        qCritical() << name << ":" << strVCSError(error);
-        return -1;
-    }
+		//(1) Clear Faults
+		ret = VCS_ClearFault(handle, mcfg.Node, &error);
+		if(ret == -1){
+				qCritical() << name << ":" << strVCSError(error);
+				return -1;
+		}
 
-    ret = VCS_SetProtocolStackSettings(handle,
-                                       100000,
-                                       100,
-                                       &error);
-    if(ret == -1){
-        qCritical() << name << ":" << strVCSError(error);
-        return -1;
-    }
+		ret = VCS_SetProtocolStackSettings(handle,
+																			 100000,
+																			 100,
+																			 &error);
+		if(ret == -1){
+				qCritical() << name << ":" << strVCSError(error);
+				return -1;
+		}
 
-    //(2) Set Enable
-    ret = VCS_SetEnableState(handle, mcfg.Node, &error);
-    if(ret == -1){
-        qCritical() << name << ":" << strVCSError(error);
-        return -1;
-    }
+		//(2) Set Enable
+		ret = VCS_SetEnableState(handle, mcfg.Node, &error);
+		if(ret == -1){
+				qCritical() << name << ":" << strVCSError(error);
+				return -1;
+		}
 
-    //(3) Set Operation Mode (Profile Position Mode)
-    ret = VCS_SetOperationMode(handle, (unsigned short)mcfg.Node, OMD_PROFILE_POSITION_MODE, &error);
-    if(ret == -1){
-        qCritical() << name << ":" << strVCSError(error);
-        return -1;
-    }
+		//(3) Set Operation Mode (Profile Position Mode)
+		ret = VCS_SetOperationMode(handle, (unsigned short)mcfg.Node, OMD_PROFILE_POSITION_MODE, &error);
+		if(ret == -1){
+				qCritical() << name << ":" << strVCSError(error);
+				return -1;
+		}
 
-    //(4) Set Max Following Error
-    ret = VCS_SetMaxFollowingError(handle, (unsigned short)mcfg.Node, 30000, &error);
-    if(ret == -1){
-        qCritical() << name << ":" << strVCSError(error);
-        return -1;
-    }
+		//(4) Set Max Following Error
+		ret = VCS_SetMaxFollowingError(handle, (unsigned short)mcfg.Node, 30000, &error);
+		if(ret == -1){
+				qCritical() << name << ":" << strVCSError(error);
+				return -1;
+		}
 
-    //(5) Set Position Profile
-    ret = VCS_SetPositionProfile(handle,
-                                 mcfg.Node,
-                                 mcfg.MaxRPM,
-                                 mcfg.Accel,
-                                 mcfg.Decel,
-                                 &error);
-    if(ret == -1){
-        qCritical() << name << ":" << strVCSError(error);
-        return -1;
-    }
+		//(5) Set Position Profile
+		ret = VCS_SetPositionProfile(handle,
+																 mcfg.Node,
+																 mcfg.MaxRPM,
+																 mcfg.Accel,
+																 mcfg.Decel,
+																 &error);
+		if(ret == -1){
+				qCritical() << name << ":" << strVCSError(error);
+				return -1;
+		}
 
-    TRACE("Success motor open");
-    return 0;
+		TRACE("Success motor open");
+		return 0;
 }
 
 /*!
@@ -168,22 +172,21 @@ int Motor::open()
  */
 void Motor::close()
 {
-    if(!isUse) return;
-    if(handle == nullptr) return;
+		if(!isUse) return;
+		if(handle == nullptr) return;
 
-    unsigned int error = 0;
+		unsigned int error = 0;
 
-    //	if(MainHandle != NULL && SubHandle != NULL){
-    //		VCS_CloseAllDevices(&error);
-    //	}
-    VCS_CloseDevice(handle, &error);
+		//	if(MainHandle != NULL && SubHandle != NULL){
+		//		VCS_CloseAllDevices(&error);
+		//	}
+		VCS_CloseDevice(handle, &error);
 
-    //	SubHandle = ;
-    MainHandle = nullptr;
+		//	SubHandle = ;
+		MainHandle = nullptr;
 
-    qInfo() << "Closed" << name << "/" << role;
-
-    return;
+		qInfo() << "Closed" << name << "/" << role;
+		return;
 }
 
 /*!
@@ -195,63 +198,63 @@ void Motor::close()
  */
 int Motor::moveto(double pos, bool minmax, bool immediatery)
 {
-    //limit
-    TRACE(QString("(Move to %1)").arg(pos));
-    if(minmax){
-        pos = std::min<double>(pos, mcfg.MaxPos);
-        pos = std::max<double>(pos, mcfg.MinPos);
-    }
-    TRACE(QString("Move to %1").arg(pos));
+		//limit
+		TRACE(QString("(Move to %1)").arg(pos));
+		if(minmax){
+				pos = std::min<double>(pos, mcfg.MaxPos);
+				pos = std::max<double>(pos, mcfg.MinPos);
+		}
+		TRACE(QString("Move to %1").arg(pos));
 
-    if(!isUse){
-        dTrgPos = pos;
-        return 0;
-    }
+		if(!isUse){
+				dTrgPos = pos;
+				return 0;
+		}
 
-    //Calculation qc
-    double deg = pos/360.0*mcfg.GearRatio;
-    long qc = deg*(double)(mcfg.EncReso);
+		//Calculation qc
+		double deg = pos/360.0*mcfg.GearRatio;
+		long qc = deg*(double)(mcfg.EncReso);
 
-    unsigned int error = 0;
-    bool ret = VCS_MoveToPosition(handle,
-                                  mcfg.Node,
-                                  qc,
-                                  true,	//Absolute
-                                  immediatery,
-                                  &error);
+		unsigned int error = 0;
+		bool ret = VCS_MoveToPosition(handle,
+																	mcfg.Node,
+																	qc,
+																	true,	//Absolute
+																	immediatery,
+																	&error);
 
-    if(!ret){
-        qWarning() << strVCSError(error);
-        return -1;
-    }
+		if(!ret){
+				qWarning() << strVCSError(error);
+				return -1;
+		}
 
-    TRACE("Success set target position");
-    return 0;
+		TRACE("Success set target position");
+		return 0;
 }
 
 int Motor::setMaxRPM(unsigned int MaxRPM)
 {
-    MaxRPM = std::min<unsigned int>(MaxRPM, mcfg.MaxRPM);
+		MaxRPM = std::min<unsigned int>(MaxRPM, mcfg.MaxRPM);
 
-    if(!isUse){
-        return 0;
-    }
+		if(!isUse){
+				return 0;
+		}
 
-    TRACE(QString("Set to %1").arg(MaxRPM));
+		TRACE(QString("Set to %1").arg(MaxRPM));
 
-    unsigned int error = 0;
-    bool ret = VCS_SetPositionProfile(handle,
-                                      mcfg.Node,
-                                      MaxRPM,
-                                      mcfg.Accel,
-                                      mcfg.Decel,
-                                      &error);
-    if(!ret){
-        qWarning() << strVCSError(error);
-        return -1;
-    }
+		unsigned int error = 0;
+		bool ret = VCS_SetPositionProfile(handle,
+																			mcfg.Node,
+																			MaxRPM,
+																			mcfg.Accel,
+																			mcfg.Decel,
+																			&error);
+		if(!ret){
+				qWarning() << strVCSError(error);
+				return -1;
+		}
 
-    return 0;
+		return 0;
 }
 
 /*!
@@ -263,46 +266,46 @@ int Motor::setMaxRPM(unsigned int MaxRPM)
  */
 int Motor::recv(MotorInfo::Data_t &d)
 {
-    if(!isUse){
-        d.Out.trgPos = dTrgPos;
-        return 0;
-    }
+		if(!isUse){
+				d.Out.trgPos = dTrgPos;
+				return 0;
+		}
 
-    int ret = 0;
-    unsigned int error = 0;
+		int ret = 0;
+		unsigned int error = 0;
 
-    int qc = 0;
-    ret = VCS_GetPositionIs(handle, mcfg.Node, &qc, &error);
-    if(!ret){
-        qWarning() << strVCSError(error);
-        return -1;
-    }
-    d.Out.pos = (double)qc/mcfg.EncReso*360.0/mcfg.GearRatio;
+		int qc = 0;
+		ret = VCS_GetPositionIs(handle, mcfg.Node, &qc, &error);
+		if(!ret){
+				qWarning() << strVCSError(error);
+				return -1;
+		}
+		d.Out.pos = (double)qc/mcfg.EncReso*360.0/mcfg.GearRatio;
 
-    long trgQc = 0;
-    ret = VCS_GetTargetPosition(handle, mcfg.Node, &trgQc, &error);
-    if(!ret){
-        qWarning() << strVCSError(error);
-        return -1;
-    }
-    d.Out.trgPos = (double)trgQc/mcfg.EncReso*360.0/mcfg.GearRatio;
+		long trgQc = 0;
+		ret = VCS_GetTargetPosition(handle, mcfg.Node, &trgQc, &error);
+		if(!ret){
+				qWarning() << strVCSError(error);
+				return -1;
+		}
+		d.Out.trgPos = (double)trgQc/mcfg.EncReso*360.0/mcfg.GearRatio;
 
-    ret = VCS_GetVelocityIs(handle, mcfg.Node, &d.Out.rpm, &error);
-    if(!ret){
-        qWarning() << strVCSError(error);
-        return -1;
-    }
+		ret = VCS_GetVelocityIs(handle, mcfg.Node, &d.Out.rpm, &error);
+		if(!ret){
+				qWarning() << strVCSError(error);
+				return -1;
+		}
 
-    ret = VCS_GetCurrentIs(handle, mcfg.Node, &d.Out.cur, &error);
-    if(!ret){
-        qWarning() << strVCSError(error);
-        return -1;
-    }
+		ret = VCS_GetCurrentIs(handle, mcfg.Node, &d.Out.cur, &error);
+		if(!ret){
+				qWarning() << strVCSError(error);
+				return -1;
+		}
 
-    d.min_pos = mcfg.MinPos;
-    d.max_pos = mcfg.MaxPos;
+		d.min_pos = mcfg.MinPos;
+		d.max_pos = mcfg.MaxPos;
 
-    return 0;
+		return 0;
 }
 
 /*!
@@ -311,45 +314,45 @@ int Motor::recv(MotorInfo::Data_t &d)
  */
 int Motor::FindMainHandle()
 {
-    unsigned int error = 0;
+		unsigned int error = 0;
 
-    char *DeviceName = new char[32];
-    char *ProtocolStackName = new char[32];
-    char *InterfaceName = new char[32];
-    char *PortName = new char[32];
+		char *DeviceName = new char[32];
+		char *ProtocolStackName = new char[32];
+		char *InterfaceName = new char[32];
+		char *PortName = new char[32];
 
-    memset(DeviceName, 0x00, 32);
-    memset(ProtocolStackName, 0x00, 32);
-    memset(InterfaceName, 0x00, 32);
-    memset(PortName, 0x00, 32);
+		memset(DeviceName, 0x00, 32);
+		memset(ProtocolStackName, 0x00, 32);
+		memset(InterfaceName, 0x00, 32);
+		memset(PortName, 0x00, 32);
 
-    memcpy(DeviceName, mcfg.DeviceName.toStdString().c_str(), mcfg.DeviceName.length());
-    memcpy(ProtocolStackName, mcfg.ProtocolStackName.toStdString().c_str(), mcfg.ProtocolStackName.length());
-    memcpy(InterfaceName, mcfg.InterfaceName.toStdString().c_str(), mcfg.InterfaceName.length());
-    memcpy(PortName, mcfg.PortName.toStdString().c_str(), mcfg.PortName.length());
+		memcpy(DeviceName, mcfg.DeviceName.toStdString().c_str(), mcfg.DeviceName.length());
+		memcpy(ProtocolStackName, mcfg.ProtocolStackName.toStdString().c_str(), mcfg.ProtocolStackName.length());
+		memcpy(InterfaceName, mcfg.InterfaceName.toStdString().c_str(), mcfg.InterfaceName.length());
+		memcpy(PortName, mcfg.PortName.toStdString().c_str(), mcfg.PortName.length());
 
-    //	qDebug() << DeviceName;
-    //	qDebug() << ProtocolStackName;
-    //	qDebug() << InterfaceName;
-    //	qDebug() << PortName;
+		//	qDebug() << DeviceName;
+		//	qDebug() << ProtocolStackName;
+		//	qDebug() << InterfaceName;
+		//	qDebug() << PortName;
 
-    if(MainHandle == nullptr){
-        MainHandle = VCS_OpenDevice(DeviceName,
-                                    ProtocolStackName,
-                                    InterfaceName,
-                                    PortName,
-                                    &error);
-    }
+		if(MainHandle == nullptr){
+				MainHandle = VCS_OpenDevice(DeviceName,
+																		ProtocolStackName,
+																		InterfaceName,
+																		PortName,
+																		&error);
+		}
 
-    if(MainHandle == nullptr){
-        qDebug() << error;
-        qCritical() << QString("%1 : Device Open Failed").arg(name);
-        qDebug() << error << strVCSError(error);
-        return -1;
-    }
+		if(MainHandle == nullptr){
+				qDebug() << error;
+				qCritical() << QString("%1 : Device Open Failed").arg(name);
+				qDebug() << error << strVCSError(error);
+				return -1;
+		}
 
-    handle = MainHandle;
-    return 0;
+		handle = MainHandle;
+		return 0;
 }
 
 /*!
@@ -358,29 +361,29 @@ int Motor::FindMainHandle()
  */
 int Motor::FindSubHandle()
 {
-    unsigned int error = 0;
+		unsigned int error = 0;
 
-    char DeviceName[32] = {'\0'};
-    char ProtocolStackName[32] = {'\0'};
-    char InterfaceName[32] = {'\0'};
+		char DeviceName[32] = {'\0'};
+		char ProtocolStackName[32] = {'\0'};
+		char InterfaceName[32] = {'\0'};
 
-    memcpy(DeviceName, mcfg.DeviceName.toStdString().c_str(), mcfg.DeviceName.length());
-    memcpy(ProtocolStackName, mcfg.ProtocolStackName.toStdString().c_str(), mcfg.ProtocolStackName.length());
-    memcpy(InterfaceName, mcfg.InterfaceName.toStdString().c_str(), mcfg.InterfaceName.length());
+		memcpy(DeviceName, mcfg.DeviceName.toStdString().c_str(), mcfg.DeviceName.length());
+		memcpy(ProtocolStackName, mcfg.ProtocolStackName.toStdString().c_str(), mcfg.ProtocolStackName.length());
+		memcpy(InterfaceName, mcfg.InterfaceName.toStdString().c_str(), mcfg.InterfaceName.length());
 
-    SubHandle = VCS_OpenSubDevice(
-                MainHandle,
-                DeviceName,
-                ProtocolStackName,
-                &error);
-    qDebug() << SubHandle;
+		SubHandle = VCS_OpenSubDevice(
+								MainHandle,
+								DeviceName,
+								ProtocolStackName,
+								&error);
+		qDebug() << SubHandle;
 
-    if(SubHandle == NULL){
-        qCritical() << QString("%1 : Device Open Failed").arg(name);
-        return -1;
-    }
+		if(SubHandle == NULL){
+				qCritical() << QString("%1 : Device Open Failed").arg(name);
+				return -1;
+		}
 
-    return 0;
+		return 0;
 }
 
 /*!
@@ -393,7 +396,7 @@ int Motor::FindSubHandle()
  */
 QString Motor::strVCSError(unsigned int error_code)
 {
-    char str[256] = {'\0'};
-    VCS_GetErrorInfo(error_code, str, 256);
-    return QString(str);
+		char str[256] = {'\0'};
+		VCS_GetErrorInfo(error_code, str, 256);
+		return QString(str);
 }
