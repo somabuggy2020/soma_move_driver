@@ -67,7 +67,6 @@ public:
 	double v[3];			//Velocity [m/s]
 	double ev[3];			//Error of velocity t and t-1 and t-2
 
-
 	bool isRemote;							//Remote false:Off, true:On
 	bool isCommClient;					//Command client false:logout, true:exists
 
@@ -76,9 +75,9 @@ public:
 	double V_ref, P, D, V_err;
 	double Pout, Dout;
 
-	bool isLog;
-	QFile *log;
-	QTextStream *out;
+	//	bool isLog;
+	//	QFile *log;
+	//	QTextStream *out;
 };
 
 

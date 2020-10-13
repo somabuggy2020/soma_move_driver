@@ -6,6 +6,7 @@
 #include <QDebug>
 
 #define QS_NUM(v)   QString::number(v)
+#define QS_NUM1(v)  QString::number(v, 'f', 1)
 #define QS_NUM2(v)  QString::number(v, 'f', 2)
 #define QS_GPS(v)   QString::number(v, 'f', 8)
 #define QPOW2(v)    qPow(v, 2)

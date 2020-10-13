@@ -62,12 +62,12 @@ twiMotor::twiMotor(QTreeWidget *parent, QString name)
 void twiMotor::set(MotorInfo::Data_t data)
 {
 	QString str;
-	str += QString("%1").arg(QS_NUM2(data.Out.pos));
+	str += QString("%1").arg(QS_NUM1(data.Out.pos));
 	str += QString("/");
-	str += QString("%2").arg(QS_NUM2(data.Out.trgPos));
+	str += QString("%2").arg(QS_NUM1(data.Out.trgPos));
 	label->setText(1, str);
 
-	pos->setText(1, QS_NUM2(data.Out.pos));
-	trgt_pos->setText(1, QS_NUM2(data.Out.trgPos));
+	pos->setText(1, QS_NUM1(data.Out.pos));
+	trgt_pos->setText(1, QS_NUM1(data.Out.trgPos));
 	rpm->setText(1, QS_NUM(data.Out.rpm));
 }

@@ -3,6 +3,7 @@
 
 #include "Motor/motorinfo.h"
 #include "Clutch/clutchinfo.h"
+#include "Rotary/rotaryinfo.h"
 
 namespace HardwareInfo {
 	struct Data_t{
@@ -12,7 +13,15 @@ namespace HardwareInfo {
 		MotorInfo::Data_t accel;
 
 		ClutchInfo::Data_t clutch;
+		RotaryInfo::Data_t rotary;
 	};
+
+	namespace AccelProfile
+	{
+		const double Regular = 8.0;
+		const double Push = 10.0;
+		const double PushTime = 1.0; //[sec]
+	}
 }
 
 #endif // HARDWAREINFO_H

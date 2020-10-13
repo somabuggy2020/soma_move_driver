@@ -10,8 +10,8 @@ Hardware::Hardware(QObject *parent) : QObject(parent)
 												 MotorInfo::Roles::Drive);
 	accel = new Motor(MotorInfo::Names::Accel,
 										MotorInfo::Roles::Drive);
-
 	clutch = new Clutch();
+	rotary = new Rotary();
 }
 
 int Hardware::init()
@@ -21,12 +21,14 @@ int Hardware::init()
 	if(frontBrake->init() == -1) return -1;
 	if(accel->init() == -1) return -1;
 	if(clutch->init() == -1) return -1;
+	if(rotary->init() == -1) return -1;
 
 	steering->open();
 	rearBrake->open();
 	frontBrake->open();
 	accel->open();
 	clutch->open();
+	rotary->open();
 
 	return 0;
 }
@@ -38,6 +40,7 @@ void Hardware::setThread(QThread *th)
 	frontBrake->moveToThread(th);
 	accel->moveToThread(th);
 	clutch->setThread(th);
+	rotary->setThread(th);
 	this->moveToThread(th);
 }
 
@@ -48,6 +51,7 @@ void Hardware::finalize()
 	frontBrake->finalize();
 	accel->finalize();
 	clutch->finalize();
+	rotary->finalize();
 }
 
 int Hardware::recv(Data *data)
@@ -56,6 +60,8 @@ int Hardware::recv(Data *data)
 	rearBrake->recv(data->hardware.rearBrake);
 	frontBrake->recv(data->hardware.frontBrake);
 	accel->recv(data->hardware.accel);
+
+	rotary->recv(data->hardware.rotary);
 }
 
 int Hardware::send(Data *data)

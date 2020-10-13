@@ -19,8 +19,10 @@ MainWindow::MainWindow(QWidget *parent) :
 	xbox = new Xbox();
 	data = new Data();
 	hardware = new Hardware();
+	behavior = new Behavior();
 
 	if(hardware->init() == -1) exit(1);
+	if(behavior->init() == -1) exit(1);
 
 	connect(this, &MainWindow::updateTimestamp, this,
 					[=](QDateTime timestamp, double T, double dt){
@@ -33,7 +35,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(this, &MainWindow::update, this,
 					[=](Data *data){
 		ui->lblState->setText(State::str[data->state]);
-		ui->lblMode->setText(State::str[data->mode]);
+		ui->lblMode->setText(Mode::str[data->mode]);
 		hardwareInfoVwr->set(data->hardware);
 	});
 
@@ -61,8 +63,9 @@ void MainWindow::main()
 	//main process
 	xbox->recv(data);
 	hardware->recv(data);
+	behavior->main(data);
 	hardware->send(data);
-	// end
+	// end main process
 
 
 

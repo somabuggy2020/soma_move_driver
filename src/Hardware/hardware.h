@@ -8,6 +8,7 @@
 #include "../Data/data.h"
 #include "Motor/motor.h"
 #include "Clutch/clutch.h"
+#include "Rotary/rotary.h"
 
 class Hardware : public QObject
 {
@@ -28,6 +29,7 @@ private:
 	Motor *frontBrake;
 	Motor *accel;
 	Clutch *clutch;
+	Rotary *rotary;
 };
 
 #endif // HARDWARE_H

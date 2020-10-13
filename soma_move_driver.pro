@@ -34,9 +34,16 @@ SOURCES += \
         src/Xbox/xbox.cpp \
         src/Xbox/Gamepad/gamepad.c \
         src/Hardware/Motor/motor.cpp \
-    src/Hardware/hardware.cpp \
-    src/Hardware/hardwareinfoviewer.cpp \
-    src/Hardware/Clutch/clutch.cpp
+        src/Hardware/hardware.cpp \
+        src/Hardware/hardwareinfoviewer.cpp \
+        src/Hardware/Clutch/clutch.cpp \
+        src/Hardware/Rotary/rotary.cpp \
+        src/Behavior/behavior.cpp \
+        src/Behavior/statebase.cpp \
+        src/Behavior/States/stop.cpp \
+        src/Behavior/States/starting.cpp \
+        src/Behavior/States/traveling.cpp \
+        src/Behavior/States/stopping.cpp \
 
 HEADERS += \
         src/mainwindow.h \
@@ -47,11 +54,19 @@ HEADERS += \
         src/Xbox/Gamepad/gamepad.h \
         src/Hardware/Motor/motor.h \
         src/Hardware/Motor/motorinfo.h \
-    src/Hardware/hardware.h \
-    src/Hardware/hardwareinfo.h \
-    src/Hardware/hardwareinfoviewer.h \
-    src/Hardware/Clutch/clutch.h \
-    src/Hardware/Clutch/clutchinfo.h
+        src/Hardware/hardware.h \
+        src/Hardware/hardwareinfo.h \
+        src/Hardware/hardwareinfoviewer.h \
+        src/Hardware/Clutch/clutch.h \
+        src/Hardware/Clutch/clutchinfo.h \
+        src/Hardware/Rotary/rotary.h \
+        src/Hardware/Rotary/rotaryinfo.h \
+        src/Behavior/behavior.h \
+        src/Behavior/statebase.h \
+        src/Behavior/States/stop.h \
+        src/Behavior/States/starting.h \
+        src/Behavior/States/traveling.h \
+        src/Behavior/States/stopping.h \
 
 FORMS += \
         src/mainwindow.ui \

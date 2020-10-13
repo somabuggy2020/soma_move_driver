@@ -15,10 +15,9 @@ Xbox::Xbox(QObject *parent) : QObject(parent)
 	if(GamepadIsConnected(GAMEPAD_0) == GAMEPAD_FALSE){
 		qWarning() << "Xbox not available";
 	}
-
-	qInfo() << "Xbox available";
-
-
+	else{
+		qInfo() << "Xbox available";
+	}
 }
 
 void Xbox::recv(Data *data)

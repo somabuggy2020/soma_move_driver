@@ -10,6 +10,7 @@
 #include "Xbox/xbox.h"
 #include "Data/data.h"
 #include "Hardware/hardware.h"
+#include "Behavior/behavior.h"
 
 #include "Hardware/hardwareinfoviewer.h"
 
@@ -46,6 +47,7 @@ private:
     Xbox *xbox;
 		Data *data;
 		Hardware *hardware;
+		Behavior *behavior;
 
 		HardwareInfoViewer *hardwareInfoVwr;
 };
