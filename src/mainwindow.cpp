@@ -9,6 +9,8 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    qInfo() << "GUI thread:" << QThread::currentThreadId();
+
     start();
 }
 
@@ -19,7 +21,12 @@ MainWindow::~MainWindow()
 
 void MainWindow::main()
 {
-    qDebug() << "call main function";
+    qDebug() << "Main process";
+    qDebug() << "Thread ID:" << this->thread->currentThreadId();
+
+
+
+
     return;
 }
 
