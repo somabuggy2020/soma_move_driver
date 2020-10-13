@@ -2,6 +2,10 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QString>
+#include <QDebug>
+#include <QThread>
+#include <QTimer>
 
 namespace Ui {
 class MainWindow;
@@ -16,7 +20,15 @@ public:
     ~MainWindow();
 
 private:
+    void start();
+
+private slots:
+    void main();
+
+private:
     Ui::MainWindow *ui;
+    QThread *thread;
+    QTimer *timer;
 };
 
 #endif // MAINWINDOW_H
