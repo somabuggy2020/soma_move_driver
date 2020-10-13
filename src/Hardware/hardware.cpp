@@ -10,6 +10,8 @@ Hardware::Hardware(QObject *parent) : QObject(parent)
 												 MotorInfo::Roles::Drive);
 	accel = new Motor(MotorInfo::Names::Accel,
 										MotorInfo::Roles::Drive);
+
+	clutch = new Clutch();
 }
 
 int Hardware::init()
@@ -18,8 +20,25 @@ int Hardware::init()
 	if(rearBrake->init() == -1) return -1;
 	if(frontBrake->init() == -1) return -1;
 	if(accel->init() == -1) return -1;
+	if(clutch->init() == -1) return -1;
+
+	steering->open();
+	rearBrake->open();
+	frontBrake->open();
+	accel->open();
+	clutch->open();
 
 	return 0;
+}
+
+void Hardware::setThread(QThread *th)
+{
+	steering->moveToThread(th);
+	rearBrake->moveToThread(th);
+	frontBrake->moveToThread(th);
+	accel->moveToThread(th);
+	clutch->setThread(th);
+	this->moveToThread(th);
 }
 
 void Hardware::finalize()
@@ -28,6 +47,7 @@ void Hardware::finalize()
 	rearBrake->finalize();
 	frontBrake->finalize();
 	accel->finalize();
+	clutch->finalize();
 }
 
 int Hardware::recv(Data *data)
@@ -36,4 +56,19 @@ int Hardware::recv(Data *data)
 	rearBrake->recv(data->hardware.rearBrake);
 	frontBrake->recv(data->hardware.frontBrake);
 	accel->recv(data->hardware.accel);
+}
+
+int Hardware::send(Data *data)
+{
+	steering->setMaxRPM(data->hardware.steering.In.rpm);
+	rearBrake->setMaxRPM(data->hardware.rearBrake.In.rpm);
+	frontBrake->setMaxRPM(data->hardware.frontBrake.In.rpm);
+	accel->setMaxRPM(data->hardware.accel.In.rpm);
+
+	steering->moveto(data->hardware.steering.In.pos);
+	rearBrake->moveto(data->hardware.rearBrake.In.pos);
+	frontBrake->moveto(data->hardware.frontBrake.In.pos);
+	accel->moveto(data->hardware.accel.In.pos);
+
+	clutch->set(data->hardware.clutch);
 }

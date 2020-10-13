@@ -61,6 +61,7 @@ void MainWindow::main()
 	//main process
 	xbox->recv(data);
 	hardware->recv(data);
+	hardware->send(data);
 	// end
 
 
@@ -92,6 +93,8 @@ void MainWindow::start()
 					SLOT(main()), Qt::DirectConnection);
 
 	timer->moveToThread(thread);
+	hardware->setThread(thread);
+
 	thread->start();
 	QMetaObject::invokeMethod(timer, "start");
 	return;

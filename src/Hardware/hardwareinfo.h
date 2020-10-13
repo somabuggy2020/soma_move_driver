@@ -2,6 +2,7 @@
 #define HARDWAREINFO_H
 
 #include "Motor/motorinfo.h"
+#include "Clutch/clutchinfo.h"
 
 namespace HardwareInfo {
 	struct Data_t{
@@ -9,6 +10,8 @@ namespace HardwareInfo {
 		MotorInfo::Data_t rearBrake;
 		MotorInfo::Data_t frontBrake;
 		MotorInfo::Data_t accel;
+
+		ClutchInfo::Data_t clutch;
 	};
 }
 

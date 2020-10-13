@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -35,7 +35,8 @@ SOURCES += \
         src/Xbox/Gamepad/gamepad.c \
         src/Hardware/Motor/motor.cpp \
     src/Hardware/hardware.cpp \
-    src/Hardware/hardwareinfoviewer.cpp
+    src/Hardware/hardwareinfoviewer.cpp \
+    src/Hardware/Clutch/clutch.cpp
 
 HEADERS += \
         src/mainwindow.h \
@@ -48,9 +49,14 @@ HEADERS += \
         src/Hardware/Motor/motorinfo.h \
     src/Hardware/hardware.h \
     src/Hardware/hardwareinfo.h \
-    src/Hardware/hardwareinfoviewer.h
+    src/Hardware/hardwareinfoviewer.h \
+    src/Hardware/Clutch/clutch.h \
+    src/Hardware/Clutch/clutchinfo.h
 
 FORMS += \
         src/mainwindow.ui \
     src/Hardware/hardwareinfoviewer.ui
+
+RESOURCES += \
+    resource/resource.qrc
 

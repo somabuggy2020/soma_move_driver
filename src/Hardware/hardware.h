@@ -5,8 +5,9 @@
 #include <QString>
 #include <QDebug>
 
-#include "Motor/motor.h"
 #include "../Data/data.h"
+#include "Motor/motor.h"
+#include "Clutch/clutch.h"
 
 class Hardware : public QObject
 {
@@ -15,15 +16,18 @@ public:
 	explicit Hardware(QObject *parent = nullptr);
 
 	int init();
+	void setThread(QThread *th);
 	void finalize();
 
 	int recv(Data *data);
+	int send(Data *data);
 
 private:
 	Motor *steering;
 	Motor *rearBrake;
 	Motor *frontBrake;
 	Motor *accel;
+	Clutch *clutch;
 };
 
 #endif // HARDWARE_H
