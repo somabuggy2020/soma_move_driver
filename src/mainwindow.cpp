@@ -7,9 +7,12 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+    qInfo() << "GUI thread:" << QThread::currentThreadId();
     ui->setupUi(this);
 
-    qInfo() << "GUI thread:" << QThread::currentThreadId();
+
+    xbox = new Xbox();
+    data = new Data();
 
     start();
 }
@@ -24,8 +27,7 @@ void MainWindow::main()
     qDebug() << "Main process";
     qDebug() << "Thread ID:" << this->thread->currentThreadId();
 
-
-
+    xbox->recv(data);
 
     return;
 }

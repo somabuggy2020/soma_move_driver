@@ -24,10 +24,19 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         src/main.cpp \
-        src/mainwindow.cpp
+        src/mainwindow.cpp \
+        src/Data/data.cpp \
+        src/Xbox/xbox.cpp \
+        src/Xbox/Gamepad/gamepad.c
 
 HEADERS += \
-        src/mainwindow.h
+        src/mainwindow.h \
+        src/Data/data.h \
+        src/Common/configfilepath.h \
+        src/Xbox/xbox.h \
+        src/Xbox/Gamepad/gamepad.h
 
 FORMS += \
         src/mainwindow.ui
+
+LIBS += -ludev

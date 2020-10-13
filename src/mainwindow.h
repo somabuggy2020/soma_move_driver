@@ -7,6 +7,9 @@
 #include <QThread>
 #include <QTimer>
 
+#include "Xbox/xbox.h"
+#include "Data/data.h"
+
 namespace Ui {
 class MainWindow;
 }
@@ -29,6 +32,9 @@ private:
     Ui::MainWindow *ui;
     QThread *thread;
     QTimer *timer;
+
+    Xbox *xbox;
+    Data *data;
 };
 
 #endif // MAINWINDOW_H
