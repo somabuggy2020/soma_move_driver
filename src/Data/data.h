@@ -13,7 +13,7 @@
 #include <QSettings>
 
 #include "../Common/configfilepath.h"
-#include "../Common/statevector.h"
+//#include "../Common/statevector.h"
 #include "../Common/definitions.h"
 //#include "../Hardware/hardwareinfo.h"
 
@@ -63,8 +63,6 @@ public:
     //Config managment
     void restoreConfig();
 
-public slots:
-
 private:
     //    QDateTime log_startTime;
     //    QDateTime log_currentTime;
@@ -76,10 +74,11 @@ public:
 
     int state, last_state;	//State namespace value
     int mode;               //Mode namespace value
-    Command_t cmd;  //Command structure
+    Command_t cmd;          //Command structure
+
     //	HardwareData hardware;	//Hardware Data
 
-    StateVector X_t;	//State vector {x, y, theta}
+    //    StateVector X_t;	//State vector {x, y, theta}
     double v[3];			//Velocity [m/s]
     double ev[3];			//Error of velocity t and t-1 and t-2
 

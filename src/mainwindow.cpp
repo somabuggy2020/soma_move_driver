@@ -10,6 +10,8 @@ MainWindow::MainWindow(QWidget *parent) :
     qInfo() << "GUI thread:" << QThread::currentThreadId();
     ui->setupUi(this);
 
+    qRegisterMetaType<Data*>("Data");
+
     connect(this, &MainWindow::updateTimestamp, this,
             [=](QDateTime timestamp, double T, double dt){
         QString str;
@@ -18,6 +20,11 @@ MainWindow::MainWindow(QWidget *parent) :
         ui->statusBar->showMessage(str);
     });
 
+    connect(this, &MainWindow::update, this,
+            [=](Data *data){
+        ui->lblState->setText(State::str[data->state]);
+        ui->lblMode->setText(State::str[data->mode]);
+    });
 
     xbox = new Xbox();
     data = new Data();
@@ -42,6 +49,8 @@ void MainWindow::main()
     emit updateTimestamp(data->ct, data->T, data->dt);
 
     xbox->recv(data);
+
+    emit update(data);
 
     QMetaObject::invokeMethod(timer, "start");
     return;

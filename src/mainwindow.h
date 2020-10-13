@@ -30,6 +30,7 @@ private slots:
 
 signals:
     void updateTimestamp(QDateTime timestamp, double T, double dt);
+    void update(Data *data);
 
 private:
     Ui::MainWindow *ui;

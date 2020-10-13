@@ -60,8 +60,8 @@ void Data::updateState()
     //		this->X_t.y = dLat*GPSInfo::K::LAT;
     //	}
     //	else{
-    this->X_t.x = 0.0;
-    this->X_t.y = 0.0;
+    //    this->X_t.x = 0.0;
+    //    this->X_t.y = 0.0;
     //	}
 
     //	this->X_t.x += gpsInfo.offset.x();
