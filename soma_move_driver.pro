@@ -34,7 +34,8 @@ SOURCES += \
         src/Xbox/xbox.cpp \
         src/Xbox/Gamepad/gamepad.c \
         src/Hardware/Motor/motor.cpp \
-    src/Hardware/hardware.cpp
+    src/Hardware/hardware.cpp \
+    src/Hardware/hardwareinfoviewer.cpp
 
 HEADERS += \
         src/mainwindow.h \
@@ -46,8 +47,10 @@ HEADERS += \
         src/Hardware/Motor/motor.h \
         src/Hardware/Motor/motorinfo.h \
     src/Hardware/hardware.h \
-    src/Hardware/hardwareinfo.h
+    src/Hardware/hardwareinfo.h \
+    src/Hardware/hardwareinfoviewer.h
 
 FORMS += \
-        src/mainwindow.ui
+        src/mainwindow.ui \
+    src/Hardware/hardwareinfoviewer.ui
 

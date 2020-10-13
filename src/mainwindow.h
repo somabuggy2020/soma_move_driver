@@ -11,6 +11,8 @@
 #include "Data/data.h"
 #include "Hardware/hardware.h"
 
+#include "Hardware/hardwareinfoviewer.h"
+
 namespace Ui {
 class MainWindow;
 }
@@ -25,6 +27,8 @@ public:
 
 private:
     void start();
+
+		void closeEvent(QCloseEvent *event);
 
 private slots:
     void main();
@@ -43,7 +47,7 @@ private:
 		Data *data;
 		Hardware *hardware;
 
-		void closeEvent(QCloseEvent *event);
+		HardwareInfoViewer *hardwareInfoVwr;
 };
 
 #endif // MAINWINDOW_H

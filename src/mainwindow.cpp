@@ -10,8 +10,11 @@ MainWindow::MainWindow(QWidget *parent) :
 	qInfo() << "GUI thread:" << QThread::currentThreadId();
 	ui->setupUi(this);
 
-	qRegisterMetaType<Data*>("Data");
+	hardwareInfoVwr = new HardwareInfoViewer(this);
+	ui->dwHardwareInfoViewer->setWidget(hardwareInfoVwr);
 
+	qRegisterMetaType<Data*>("Data");
+	qRegisterMetaType<HardwareInfo::Data_t>("HardwareData");
 
 	xbox = new Xbox();
 	data = new Data();
@@ -31,6 +34,7 @@ MainWindow::MainWindow(QWidget *parent) :
 					[=](Data *data){
 		ui->lblState->setText(State::str[data->state]);
 		ui->lblMode->setText(State::str[data->mode]);
+		hardwareInfoVwr->set(data->hardware);
 	});
 
 	start();
@@ -57,8 +61,8 @@ void MainWindow::main()
 	//main process
 	xbox->recv(data);
 	hardware->recv(data);
-
 	// end
+
 
 
 	if(!isThread){
@@ -66,7 +70,6 @@ void MainWindow::main()
 		thread->deleteLater();
 		return;
 	}
-
 
 	emit update(data);
 	QMetaObject::invokeMethod(timer, "start");

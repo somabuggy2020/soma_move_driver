@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>285</width>
+    <width>433</width>
     <height>179</height>
    </rect>
   </property>
@@ -112,7 +112,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>285</width>
+     <width>433</width>
      <height>25</height>
     </rect>
    </property>
@@ -126,7 +126,13 @@
    </attribute>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
-  <widget class="QDockWidget" name="dockWidget">
+  <widget class="QDockWidget" name="dwHardwareInfoViewer">
+   <property name="minimumSize">
+    <size>
+     <width>200</width>
+     <height>36</height>
+    </size>
+   </property>
    <attribute name="dockWidgetArea">
     <number>1</number>
    </attribute>
