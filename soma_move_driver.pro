@@ -17,6 +17,11 @@ TEMPLATE = app
 # deprecated API in order to know how to port your code away from it.
 DEFINES += QT_DEPRECATED_WARNINGS
 
+INCLUDEPATH += /usr/local/include/EposCmdLib
+LIBS += -L/usr/local/lib/EposCmdLib -lEposCmd
+
+LIBS += -ludev
+
 # You can also make your code fail to compile if you use deprecated APIs.
 # In order to do so, uncomment the following line.
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
@@ -27,7 +32,9 @@ SOURCES += \
         src/mainwindow.cpp \
         src/Data/data.cpp \
         src/Xbox/xbox.cpp \
-        src/Xbox/Gamepad/gamepad.c
+        src/Xbox/Gamepad/gamepad.c \
+        src/Hardware/Motor/motor.cpp \
+    src/Hardware/hardware.cpp
 
 HEADERS += \
         src/mainwindow.h \
@@ -35,9 +42,11 @@ HEADERS += \
         src/Common/configfilepath.h \
         src/Common/definitions.h \
         src/Xbox/xbox.h \
-        src/Xbox/Gamepad/gamepad.h
+        src/Xbox/Gamepad/gamepad.h \
+        src/Hardware/Motor/motor.h \
+        src/Hardware/Motor/motorinfo.h \
+    src/Hardware/hardware.h
 
 FORMS += \
         src/mainwindow.ui
 
-LIBS += -ludev
