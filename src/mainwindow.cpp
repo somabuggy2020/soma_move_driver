@@ -24,6 +24,10 @@ MainWindow::MainWindow(QWidget *parent) :
 	if(hardware->init() == -1) exit(1);
 	if(behavior->init() == -1) exit(1);
 
+	udp2NUC1.IP = "192.168.1.11";
+	udp2NUC1.port = 7002;
+	udp2NUC1.socket = new QUdpSocket();
+
 	connect(this, &MainWindow::updateTimestamp, this,
 					[=](QDateTime timestamp, double T, double dt){
 		QString str;
@@ -38,7 +42,7 @@ MainWindow::MainWindow(QWidget *parent) :
 		ui->lblState->setText(State::str[data->state]);
 		ui->lblMode->setText(Mode::str[data->mode]);
 		hardwareInfoVwr->set(data->hardware);
-	});
+	}, Qt::QueuedConnection);
 
 	start();
 }
@@ -67,6 +71,21 @@ void MainWindow::main()
 	behavior->main(data);
 	hardware->send(data);
 	// end main process
+
+
+	struct Send_t
+	{
+		int state;
+		double steer;
+	} send;
+	send.state = data->state;
+	send.steer = data->hardware.steering.Out.pos;
+
+	udp2NUC1.socket->writeDatagram(
+				(char*)&send,
+				sizeof(Send_t),
+				QHostAddress(udp2NUC1.IP),
+				udp2NUC1.port);
 
 
 	if(!isThread){
@@ -99,6 +118,7 @@ void MainWindow::start()
 
 	timer->moveToThread(thread);
 	hardware->setThread(thread);
+	udp2NUC1.socket->moveToThread(thread);
 
 	thread->start();
 	QMetaObject::invokeMethod(timer, "start");

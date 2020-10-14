@@ -6,6 +6,7 @@
 #include <QDebug>
 #include <QThread>
 #include <QTimer>
+#include <QUdpSocket>
 
 #include "Xbox/xbox.h"
 #include "Data/data.h"
@@ -40,6 +41,7 @@ signals:
 
 private:
     Ui::MainWindow *ui;
+		HardwareInfoViewer *hardwareInfoVwr;
     QThread *thread;
     QTimer *timer;
 		bool isThread;
@@ -49,7 +51,7 @@ private:
 		Hardware *hardware;
 		Behavior *behavior;
 
-		HardwareInfoViewer *hardwareInfoVwr;
+		UDPInfo_t udp2NUC1;
 };
 
 #endif // MAINWINDOW_H
