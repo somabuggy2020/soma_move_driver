@@ -14,6 +14,7 @@
 #include "Behavior/behavior.h"
 
 #include "Hardware/hardwareinfoviewer.h"
+#include "Hardware/hardwaremanualcontrolpanel.h"
 
 namespace Ui {
 class MainWindow;
@@ -35,6 +36,8 @@ private:
 private slots:
     void main();
 
+		void on_actionActuatorManualControl_toggled(bool arg1);
+
 signals:
 		void updateTimestamp(QDateTime timestamp, double T, double dt);
 		void update(Data *data);
@@ -42,7 +45,9 @@ signals:
 private:
     Ui::MainWindow *ui;
 		HardwareInfoViewer *hardwareInfoVwr;
-    QThread *thread;
+		HardwareManualControlPanel *hardwareManualControlPanal;
+
+		QThread *thread;
     QTimer *timer;
 		bool isThread;
 

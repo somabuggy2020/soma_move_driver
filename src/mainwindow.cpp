@@ -13,6 +13,10 @@ MainWindow::MainWindow(QWidget *parent) :
 	hardwareInfoVwr = new HardwareInfoViewer(this);
 	ui->dwHardwareInfoViewer->setWidget(hardwareInfoVwr);
 
+	hardwareManualControlPanal = new HardwareManualControlPanel(this);
+	hardwareManualControlPanal->setWindowFlag(Qt::Window);
+	hardwareManualControlPanal->hide();
+
 	qRegisterMetaType<Data*>("Data");
 	qRegisterMetaType<HardwareInfo::Data_t>("HardwareData");
 
@@ -87,7 +91,6 @@ void MainWindow::main()
 				QHostAddress(udp2NUC1.IP),
 				udp2NUC1.port);
 
-
 	if(!isThread){
 		hardware->finalize();
 		return;
@@ -123,4 +126,16 @@ void MainWindow::start()
 	thread->start();
 	QMetaObject::invokeMethod(timer, "start");
 	return;
+}
+
+void MainWindow::on_actionActuatorManualControl_toggled(bool arg1)
+{
+	if(arg1){
+		hardwareManualControlPanal->show();
+		data->cmd.mode = Mode::ManualControl;
+	}
+	else{
+		hardwareManualControlPanal->hide();
+		data->cmd.mode = Mode::Stop;
+	}
 }

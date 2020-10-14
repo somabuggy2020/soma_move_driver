@@ -16,6 +16,8 @@
 #include "States/stacking.h"
 #include "States/stacking.h"
 
+#include "States/manualcontrol.h"
+
 class Behavior
 {
 public:
@@ -26,14 +28,13 @@ public:
   void main(Data *data);
 
 private:
-  bool MotorCalibrationState(Data *data);
-
-private:
   Stop *stop;
   Starting *starting;
   Traveling *traveling;
   Stopping *stopping;
   //	Stacking *stacking;
+
+	ManualControl *manualControl;
 
 private:
   QMap<int, StateBase*> state;
