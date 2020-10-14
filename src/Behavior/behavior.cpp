@@ -14,11 +14,15 @@ int Behavior::init()
   stopping = new Stopping();
   //	stacking = new Stacking();
 
+	manualControl = new ManualControl();
+
 	stop->init();
 	starting->init();
 	traveling->init();
 	stopping->init();
   //	stacking->initialize();
+
+	manualControl->init();
 
   state[State::Stop] = stop;
   state[State::Starting] = starting;
@@ -26,6 +30,7 @@ int Behavior::init()
   state[State::Stopping] = stopping;
   //	state[State::Stacking] = stacking;
 
+	state[State::ManualControl] = manualControl;
   return 0;
 }
 
@@ -72,25 +77,3 @@ void Behavior::main(Data *data)
   return;
 }
 
-bool Behavior::MotorCalibrationState(Data *data)
-{
-  //	if(data->command.mode == Mode::MotorCalibration){
-  //		if(data->state != State::MotorCalibration){
-  //			data->state = State::MotorCalibration;
-  //			qDebug() << data->state << data->command.mode;
-  //			return true;
-  //		}
-
-  //		if(data->state == State::MotorCalibration){
-  //			return true;
-  //		}
-  //	}
-  //	else{
-  //		if(data->state == State::MotorCalibration){
-  //			data->state = State::Stop;
-  //			return false;
-  //		}
-  //	}
-
-  return false;
-}

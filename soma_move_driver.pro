@@ -44,6 +44,8 @@ SOURCES += \
         src/Behavior/States/starting.cpp \
         src/Behavior/States/traveling.cpp \
         src/Behavior/States/stopping.cpp \
+    src/Behavior/States/manualcontrol.cpp \
+    src/Hardware/hardwaremanualcontrolpanel.cpp
 
 HEADERS += \
         src/mainwindow.h \
@@ -67,10 +69,13 @@ HEADERS += \
         src/Behavior/States/starting.h \
         src/Behavior/States/traveling.h \
         src/Behavior/States/stopping.h \
+    src/Behavior/States/manualcontrol.h \
+    src/Hardware/hardwaremanualcontrolpanel.h
 
 FORMS += \
         src/mainwindow.ui \
-    src/Hardware/hardwareinfoviewer.ui
+    src/Hardware/hardwareinfoviewer.ui \
+    src/Hardware/hardwaremanualcontrolpanel.ui
 
 RESOURCES += \
     resource/resource.qrc

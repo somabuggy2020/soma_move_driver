@@ -10,6 +10,8 @@
 #include "hardwareinfo.h"
 
 class twiMotor;
+class twiClutch;
+class twiRotary;
 
 namespace Ui {
 	class HardwareInfoViewer;
@@ -28,10 +30,12 @@ public slots:
 
 private:
 	Ui::HardwareInfoViewer *ui;
-	twiMotor *twiSteering;
-	twiMotor *twiRearBrake;
-	twiMotor *twiFrontBrake;
-	twiMotor *twiAccel;
+	twiMotor *steering;
+	twiMotor *rearBrake;
+	twiMotor *frontBrake;
+	twiMotor *accel;
+	twiClutch *clutch;
+	twiRotary *rotary;
 };
 
 class twiMotor
@@ -45,6 +49,28 @@ private:
 	QTreeWidgetItem *label;
 	QTreeWidgetItem *pos, *trgt_pos;
 	QTreeWidgetItem *rpm;
+};
+
+class twiClutch
+{
+public:
+	twiClutch(QTreeWidget *parent);
+	void set(ClutchInfo::Data_t data);
+
+private:
+	QTreeWidget *parent;
+	QTreeWidgetItem *label;
+};
+
+class twiRotary
+{
+public:
+	twiRotary(QTreeWidget *parent);
+	void set(RotaryInfo::Data_t data);
+
+private:
+	QTreeWidget *parent;
+	QTreeWidgetItem *label;
 };
 
 #endif // HARDWAREINFOVIEWER_H

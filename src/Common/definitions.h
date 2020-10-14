@@ -24,7 +24,7 @@ namespace State
 	const int Stop = 4;
 	const int Stacking = 5;
 
-	const int MotorCalibration = 6;
+	const int ManualControl = 6;
 	const int RotaryReset = 7;
 
 	const QMap<int, QString> str{{Init, "Init"},
@@ -33,7 +33,7 @@ namespace State
 															 {Stopping, "Stopping"},
 															 {Stop, "Stop"},
 															 {Stacking, "Stacking"},
-															 {MotorCalibration, "MotorCalibration"}};
+															 {ManualControl, "ManualControl"}};
 }
 
 /*!
@@ -48,17 +48,20 @@ namespace Mode
 
 	namespace Remote
 	{
-		const int Go = 5;		//Remote?O?i??????
-		const int Back = 6;	//Remote???i??????
-		const int Stop = 7;	//Remote???~??????
+		const int Go = 4;		//Remote?O?i??????
+		const int Back = 5;	//Remote???i??????
+		const int Stop = 6;	//Remote???~??????
 	}
+
+	const int ManualControl = 7;
 
 	const QMap<int, QString> str{{Forward, "Forward"},
 															 {Backward, "Backward"},
 															 {Stop, "Stop"},
 															 {Remote::Go, "Remote Go"},
 															 {Remote::Back, "Remote Back"},
-															 {Remote::Stop, "Remote Stop"}};
+															 {Remote::Stop, "Remote Stop"},
+															 {ManualControl, "ManualControl"}};
 
 }
 

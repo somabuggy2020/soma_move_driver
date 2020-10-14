@@ -6,6 +6,7 @@
 #include <QDebug>
 #include <QThread>
 #include <QTimer>
+#include <QUdpSocket>
 
 #include "Xbox/xbox.h"
 #include "Data/data.h"
@@ -13,6 +14,7 @@
 #include "Behavior/behavior.h"
 
 #include "Hardware/hardwareinfoviewer.h"
+#include "Hardware/hardwaremanualcontrolpanel.h"
 
 namespace Ui {
 class MainWindow;
@@ -34,13 +36,18 @@ private:
 private slots:
     void main();
 
+		void on_actionActuatorManualControl_toggled(bool arg1);
+
 signals:
 		void updateTimestamp(QDateTime timestamp, double T, double dt);
 		void update(Data *data);
 
 private:
     Ui::MainWindow *ui;
-    QThread *thread;
+		HardwareInfoViewer *hardwareInfoVwr;
+		HardwareManualControlPanel *hardwareManualControlPanal;
+
+		QThread *thread;
     QTimer *timer;
 		bool isThread;
 
@@ -49,7 +56,7 @@ private:
 		Hardware *hardware;
 		Behavior *behavior;
 
-		HardwareInfoViewer *hardwareInfoVwr;
+		UDPInfo_t udp2NUC1;
 };
 
 #endif // MAINWINDOW_H

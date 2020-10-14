@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#define TIMER_T 33
+#define TIMER_T 1
 
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
@@ -12,6 +12,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	hardwareInfoVwr = new HardwareInfoViewer(this);
 	ui->dwHardwareInfoViewer->setWidget(hardwareInfoVwr);
+
+	hardwareManualControlPanal = new HardwareManualControlPanel(this);
+	hardwareManualControlPanal->setWindowFlag(Qt::Window);
+	hardwareManualControlPanal->hide();
 
 	qRegisterMetaType<Data*>("Data");
 	qRegisterMetaType<HardwareInfo::Data_t>("HardwareData");
@@ -24,6 +28,10 @@ MainWindow::MainWindow(QWidget *parent) :
 	if(hardware->init() == -1) exit(1);
 	if(behavior->init() == -1) exit(1);
 
+	udp2NUC1.IP = "192.168.1.11";
+	udp2NUC1.port = 7002;
+	udp2NUC1.socket = new QUdpSocket();
+
 	connect(this, &MainWindow::updateTimestamp, this,
 					[=](QDateTime timestamp, double T, double dt){
 		QString str;
@@ -34,10 +42,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	connect(this, &MainWindow::update, this,
 					[=](Data *data){
+		ui->lblCmd->setText(QString(":>%1 : %2 [deg] : %3 [m/s]").arg(Mode::str[data->cmd.mode]).arg(data->cmd.steer).arg(data->cmd.v));
 		ui->lblState->setText(State::str[data->state]);
 		ui->lblMode->setText(Mode::str[data->mode]);
 		hardwareInfoVwr->set(data->hardware);
-	});
+	}, Qt::QueuedConnection);
 
 	start();
 }
@@ -68,10 +77,22 @@ void MainWindow::main()
 	// end main process
 
 
+	struct Send_t
+	{
+		int state;
+		double steer;
+	} send;
+	send.state = data->state;
+	send.steer = data->hardware.steering.Out.pos;
+
+	udp2NUC1.socket->writeDatagram(
+				(char*)&send,
+				sizeof(Send_t),
+				QHostAddress(udp2NUC1.IP),
+				udp2NUC1.port);
 
 	if(!isThread){
 		hardware->finalize();
-		thread->deleteLater();
 		return;
 	}
 
@@ -83,6 +104,9 @@ void MainWindow::main()
 void MainWindow::closeEvent(QCloseEvent *event)
 {
 	isThread = false;
+	QThread::sleep(1);
+	thread->quit();
+	thread->wait();
 }
 
 void MainWindow::start()
@@ -97,8 +121,21 @@ void MainWindow::start()
 
 	timer->moveToThread(thread);
 	hardware->setThread(thread);
+	udp2NUC1.socket->moveToThread(thread);
 
 	thread->start();
 	QMetaObject::invokeMethod(timer, "start");
 	return;
+}
+
+void MainWindow::on_actionActuatorManualControl_toggled(bool arg1)
+{
+	if(arg1){
+		hardwareManualControlPanal->show();
+		data->cmd.mode = Mode::ManualControl;
+	}
+	else{
+		hardwareManualControlPanal->hide();
+		data->cmd.mode = Mode::Stop;
+	}
 }

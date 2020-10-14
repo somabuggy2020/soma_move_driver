@@ -46,12 +46,19 @@ void Hardware::setThread(QThread *th)
 
 void Hardware::finalize()
 {
+	steering->moveto(0);
+	rearBrake->moveto(0);
+	frontBrake->moveto(0);
+	accel->moveto(0);
+
 	steering->finalize();
 	rearBrake->finalize();
 	frontBrake->finalize();
 	accel->finalize();
 	clutch->finalize();
 	rotary->finalize();
+
+	return;
 }
 
 int Hardware::recv(Data *data)
@@ -62,6 +69,8 @@ int Hardware::recv(Data *data)
 	accel->recv(data->hardware.accel);
 
 	rotary->recv(data->hardware.rotary);
+
+
 }
 
 int Hardware::send(Data *data)
@@ -71,10 +80,10 @@ int Hardware::send(Data *data)
 	frontBrake->setMaxRPM(data->hardware.frontBrake.In.rpm);
 	accel->setMaxRPM(data->hardware.accel.In.rpm);
 
-	steering->moveto(data->hardware.steering.In.pos);
-	rearBrake->moveto(data->hardware.rearBrake.In.pos);
-	frontBrake->moveto(data->hardware.frontBrake.In.pos);
-	accel->moveto(data->hardware.accel.In.pos);
+	steering->moveto(data->hardware.steering.In.pos, data->hardware.steering.In.minmax);
+	rearBrake->moveto(data->hardware.rearBrake.In.pos, data->hardware.rearBrake.In.minmax);
+	frontBrake->moveto(data->hardware.frontBrake.In.pos, data->hardware.frontBrake.In.minmax);
+	accel->moveto(data->hardware.accel.In.pos, data->hardware.accel.In.minmax);
 
 	clutch->set(data->hardware.clutch);
 }

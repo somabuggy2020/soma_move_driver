@@ -8,12 +8,15 @@ Stop::Stop()
 int Stop::_isTransition(Data *data)
 {
 	switch(data->cmd.mode){
-		case Mode::Forward:
-		case Mode::Backward:
-		case Mode::Remote::Go:
-		case Mode::Remote::Back:
-			data->mode = data->cmd.mode;
-			return State::Starting;	//->Transision to Starting state
+	case Mode::Forward:
+	case Mode::Backward:
+	case Mode::Remote::Go:
+	case Mode::Remote::Back:
+		data->mode = data->cmd.mode;
+		return State::Starting;	//->Transision to Starting state
+	case Mode::ManualControl:
+		data->mode = data->cmd.mode;
+		return State::ManualControl;
 	}
 
 	data->mode = data->cmd.mode;

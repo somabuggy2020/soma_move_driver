@@ -24,10 +24,11 @@ namespace MotorInfo {
 		//Input data structure
 		struct In_t
 		{
-			double pos; //[deg]
+			double pos;				//[deg]
 			unsigned int rpm; //[rpm]
+			bool minmax;
 
-			In_t() : pos(0.0), rpm(MotorRPM::Default) {}
+			In_t() : pos(0.0), rpm(MotorRPM::Default), minmax(true) {}
 		};
 
 		//Output data structure
