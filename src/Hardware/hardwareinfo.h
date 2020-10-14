@@ -18,7 +18,7 @@ namespace HardwareInfo {
 
 	namespace AccelProfile
 	{
-		const double Regular = 8.0;
+		const double Regular = 7.5;
 		const double Push = 10.0;
 		const double PushTime = 1.0; //[sec]
 	}
