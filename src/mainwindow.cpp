@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#define TIMER_T 3
+#define TIMER_T 1
 
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
@@ -71,7 +71,6 @@ void MainWindow::main()
 
 	if(!isThread){
 		hardware->finalize();
-		thread->deleteLater();
 		return;
 	}
 
@@ -83,6 +82,9 @@ void MainWindow::main()
 void MainWindow::closeEvent(QCloseEvent *event)
 {
 	isThread = false;
+	QThread::sleep(1);
+	thread->quit();
+	thread->wait();
 }
 
 void MainWindow::start()

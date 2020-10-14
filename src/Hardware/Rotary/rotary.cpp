@@ -20,10 +20,12 @@ int Rotary::init()
 
 	cfg->beginGroup("ROTARY");
 	udp_recv.IP = cfg->value("IP", "192.168.1.79").toString();
-	udp_recv.port = cfg->value("UDP_RECV_PORT", 12345).toInt();
+	udp_recv.port = cfg->value("UDP_RECV_PORT", 12346).toInt();
 	udp_send.IP = cfg->value("IP", "192.168.1.79").toString();
-	udp_send.port = cfg->value("UDP_SEND_PORT", 12346).toInt();
+	udp_send.port = cfg->value("UDP_SEND_PORT", 22346).toInt();
 	cfg->endGroup();
+
+	qDebug() << udp_recv.port;
 
 	return 0;
 }
@@ -74,13 +76,14 @@ int Rotary::recv(RotaryInfo::Data_t &data)
 	if(!isUse) return 0;
 
 	RotaryInfo::Recv_t recv;
-
+	qDebug() << udp_recv.socket->bytesAvailable();
 	if(udp_recv.socket->waitForReadyRead(33)){
 		while(udp_recv.socket->bytesAvailable() > 0){
 			udp_recv.socket->readDatagram((char*)&recv, sizeof(RotaryInfo::Recv_t));
 		}
 	}
 	else{
+		qDebug() << "Not available datagram";
 		return 0;
 	}
 

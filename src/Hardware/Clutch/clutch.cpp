@@ -17,7 +17,7 @@ int Clutch::init()
 	udp_recv.IP = cfg->value("IP", "192.168.1.79").toString();
 	udp_recv.port = cfg->value("UDP_RECV_PORT", 12345).toInt();
 	udp_send.IP = cfg->value("IP", "192.168.1.79").toString();
-	udp_send.port = cfg->value("UDP_SEND_PORT", 12346).toInt();
+	udp_send.port = cfg->value("UDP_SEND_PORT", 22345).toInt();
 	cfg->endGroup();
 
 	return 0;
@@ -48,6 +48,11 @@ int Clutch::set(ClutchInfo::Data_t &data)
 {
 	int ret = -1;
 
+	if(!isUse){
+		data.Out = data.In; //copy and return
+		return 0;
+	}
+
 	switch(data.In){
 	case ClutchInfo::Forward:
 		ret = Forward();
@@ -62,7 +67,11 @@ int Clutch::set(ClutchInfo::Data_t &data)
 		break;
 	}
 
-	return ret;
+	if(ret == 0){
+		data.Out = data.In;
+	}
+
+	return 0;
 }
 
 int Clutch::recv(ClutchInfo::Data_t &data)
@@ -103,6 +112,8 @@ int Clutch::Backward()
 																 sizeof(int),
 																 QHostAddress(udp_send.IP),
 																 udp_send.port);
+
+	return 0;
 }
 
 int Clutch::Free()
@@ -112,4 +123,5 @@ int Clutch::Free()
 																 sizeof(int),
 																 QHostAddress(udp_send.IP),
 																 udp_send.port);
+	return 0;
 }

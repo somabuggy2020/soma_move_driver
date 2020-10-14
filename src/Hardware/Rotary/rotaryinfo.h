@@ -14,7 +14,7 @@ namespace RotaryInfo
 
 	struct Recv_t
 	{
-		long pulse;
+		unsigned long pulse;
 		double velo;
 
 		Recv_t():pulse(0), velo(0.0){}

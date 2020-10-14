@@ -12,10 +12,12 @@ HardwareInfoViewer::HardwareInfoViewer(QWidget *parent) :
 	headers << "key" << "value";
 	ui->tw->setHeaderLabels(headers);
 
-	twiSteering = new twiMotor(ui->tw, "Steering");
-	twiRearBrake = new twiMotor(ui->tw, "RearBrake");
-	twiFrontBrake = new twiMotor(ui->tw, "FrontBrake");
-	twiAccel = new twiMotor(ui->tw, "Accel");
+	steering = new twiMotor(ui->tw, "Steering");
+	rearBrake = new twiMotor(ui->tw, "RearBrake");
+	frontBrake = new twiMotor(ui->tw, "FrontBrake");
+	accel = new twiMotor(ui->tw, "Accel");
+	clutch = new twiClutch(ui->tw);
+	rotary = new twiRotary(ui->tw);
 }
 
 HardwareInfoViewer::~HardwareInfoViewer()
@@ -25,10 +27,12 @@ HardwareInfoViewer::~HardwareInfoViewer()
 
 void HardwareInfoViewer::set(HardwareInfo::Data_t d)
 {
-	twiSteering->set(d.steering);
-	twiRearBrake->set(d.rearBrake);
-	twiFrontBrake->set(d.frontBrake);
-	twiAccel->set(d.accel);
+	steering->set(d.steering);
+	rearBrake->set(d.rearBrake);
+	frontBrake->set(d.frontBrake);
+	accel->set(d.accel);
+	clutch->set(d.clutch);
+	rotary->set(d.rotary);
 	return;
 }
 
@@ -69,4 +73,37 @@ void twiMotor::set(MotorInfo::Data_t data)
 	pos->setText(1, QS_NUM1(data.Out.pos));
 	trgt_pos->setText(1, QS_NUM1(data.Out.trgPos));
 	rpm->setText(1, QS_NUM(data.Out.rpm));
+}
+
+twiClutch::twiClutch(QTreeWidget *parent)
+{
+	this->parent = parent;
+	label = new QTreeWidgetItem(parent);
+	label->setText(0, "Clutch");
+	label->setText(1, "in/out");
+}
+
+void twiClutch::set(ClutchInfo::Data_t data)
+{
+	QString str;
+	str += QString("%1").arg(ClutchInfo::str[data.Out]);
+	str += "/";
+	str += QString("%1").arg(ClutchInfo::str[data.In]);
+	label->setText(1, str);
+}
+
+twiRotary::twiRotary(QTreeWidget *parent)
+{
+	this->parent = parent;
+	label = new QTreeWidgetItem(parent);
+	label->setText(0, "Rotary");
+	label->setText(1, "0/0.0");
+}
+
+void twiRotary::set(RotaryInfo::Data_t data)
+{
+	QString str;
+	str += QString("%1").arg(QS_NUM(data.pulse[0]));
+	str += "/";
+	str += QString("%1").arg(QS_NUM2(data.v));
 }

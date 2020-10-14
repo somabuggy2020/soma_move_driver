@@ -44,7 +44,7 @@ int Starting::_Enter(Data *data)
 
 	data->hardware.steering.In.pos = data->cmd.steer;
 	data->hardware.rearBrake.In.rpm = 100;
-	data->hardware.accel.In.rpm = 250;
+	data->hardware.accel.In.rpm = 300;
 
 	T = 0.0;
 	return 0;
@@ -66,7 +66,7 @@ int Starting::_Process(Data *data)
 	//  }
 
 	if(T >= HardwareInfo::AccelProfile::PushTime){
-		data->hardware.accel.In.rpm = 10;
+		data->hardware.accel.In.rpm = 50;
 		data->hardware.accel.In.pos = HardwareInfo::AccelProfile::Push;
 	}
 

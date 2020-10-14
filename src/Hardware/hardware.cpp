@@ -46,12 +46,19 @@ void Hardware::setThread(QThread *th)
 
 void Hardware::finalize()
 {
+	steering->moveto(0);
+	rearBrake->moveto(0);
+	frontBrake->moveto(0);
+	accel->moveto(0);
+
 	steering->finalize();
 	rearBrake->finalize();
 	frontBrake->finalize();
 	accel->finalize();
 	clutch->finalize();
 	rotary->finalize();
+
+	return;
 }
 
 int Hardware::recv(Data *data)
@@ -62,6 +69,8 @@ int Hardware::recv(Data *data)
 	accel->recv(data->hardware.accel);
 
 	rotary->recv(data->hardware.rotary);
+
+
 }
 
 int Hardware::send(Data *data)

@@ -124,7 +124,7 @@ int Motor::open()
 
 	ret = VCS_SetProtocolStackSettings(handle,
 																		 100000,
-																		 100,
+																		 300,
 																		 &error);
 	if(ret == -1){
 		qCritical() << name << ":" << strVCSError(error);
@@ -262,8 +262,6 @@ int Motor::setMaxRPM(unsigned int MaxRPM)
  * \brief Motor::recv
  * \param d
  * \return
- *
- * アクチュエータの出力データ(電流、速度、角度)を取得
  */
 int Motor::recv(MotorInfo::Data_t &d)
 {
@@ -289,7 +287,8 @@ int Motor::recv(MotorInfo::Data_t &d)
 		qWarning() << strVCSError(error);
 		return -1;
 	}
-	d.Out.trgPos = (double)trgQc/mcfg.EncReso*360.0/mcfg.GearRatio;
+	d.Out.trgPos = (double)trgQc/(double)mcfg.EncReso*360.0/mcfg.GearRatio;
+
 
 	ret = VCS_GetVelocityIs(handle, mcfg.Node, &d.Out.rpm, &error);
 	if(!ret){
@@ -297,11 +296,11 @@ int Motor::recv(MotorInfo::Data_t &d)
 		return -1;
 	}
 
-	ret = VCS_GetCurrentIs(handle, mcfg.Node, &d.Out.cur, &error);
-	if(!ret){
-		qWarning() << strVCSError(error);
-		return -1;
-	}
+	//	ret = VCS_GetCurrentIs(handle, mcfg.Node, &d.Out.cur, &error);
+	//	if(!ret){
+	//		qWarning() << strVCSError(error);
+	//		return -1;
+	//	}
 
 	d.min_pos = mcfg.MinPos;
 	d.max_pos = mcfg.MaxPos;
@@ -391,8 +390,6 @@ int Motor::FindSubHandle()
  * \brief Motor::strVCSError
  * \param error_code
  * \return
- *
- * EPOSのエラー詳細文字列を取得
  *
  */
 QString Motor::strVCSError(unsigned int error_code)
