@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#define TIMER_T 33
+#define TIMER_T 3
 
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
@@ -34,6 +34,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	connect(this, &MainWindow::update, this,
 					[=](Data *data){
+		ui->lblCmd->setText(QString(":>%1 : %2 [deg] : %3 [m/s]").arg(Mode::str[data->cmd.mode]).arg(data->cmd.steer).arg(data->cmd.v));
 		ui->lblState->setText(State::str[data->state]);
 		ui->lblMode->setText(Mode::str[data->mode]);
 		hardwareInfoVwr->set(data->hardware);
@@ -66,7 +67,6 @@ void MainWindow::main()
 	behavior->main(data);
 	hardware->send(data);
 	// end main process
-
 
 
 	if(!isThread){

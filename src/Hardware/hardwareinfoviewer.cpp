@@ -16,7 +16,6 @@ HardwareInfoViewer::HardwareInfoViewer(QWidget *parent) :
 	twiRearBrake = new twiMotor(ui->tw, "RearBrake");
 	twiFrontBrake = new twiMotor(ui->tw, "FrontBrake");
 	twiAccel = new twiMotor(ui->tw, "Accel");
-
 }
 
 HardwareInfoViewer::~HardwareInfoViewer()
