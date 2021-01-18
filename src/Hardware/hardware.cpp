@@ -69,8 +69,6 @@ int Hardware::recv(Data *data)
 	accel->recv(data->hardware.accel);
 
 	rotary->recv(data->hardware.rotary);
-
-
 }
 
 int Hardware::send(Data *data)

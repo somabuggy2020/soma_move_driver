@@ -124,7 +124,7 @@ int Motor::open()
 
 	ret = VCS_SetProtocolStackSettings(handle,
 																		 100000,
-																		 500,
+																		 200,
 																		 &error);
 	if(ret == -1){
 		qCritical() << name << ":" << strVCSError(error);
